@@ -9,29 +9,42 @@
     <name>Cucumber Xray Integration</name>
     <description>Sample Maven project for Cucumber-Xray integration</description>
     <properties>
-    <maven.compiler.source>21</maven.compiler.source>
-    <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
     </properties>
+    
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
-        <!-- Add Cucumber, JUnit, and other dependencies here -->
+        <!-- Cucumber core to write step definitions -->
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
-                <version>7.18.1</version>
+            <version>7.18.1</version>
         </dependency>
+
+        <!-- Cucumber engine for JUnit Platform (runs features via JUnit 5 provider) -->
         <dependency>
             <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-junit</artifactId>
-                <version>7.18.1</version>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
+            <version>7.18.1</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- JUnit Jupiter (JUnit 5) test framework -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-                <version>4.13.2</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -43,6 +56,21 @@
                     <target>21</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <cucumber.plugin>json:target/cucumber-report.json</cucumber.plugin>
+                        <!-- Ensure Cucumber engine knows where to find features and glue during Surefire runs -->
+                        <cucumber.features>classpath:features</cucumber.features>
+                        <cucumber.glue>steps</cucumber.glue>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+            <!-- xray-maven-plugin removed to avoid external auth failures and hard-coded secrets.
+                 Re-add if you have a secured repository and have configured credentials in ~/.m2/settings.xml -->
         </plugins>
     </build>
 </project>
